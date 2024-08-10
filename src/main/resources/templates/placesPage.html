@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Моя библиотека</title>
+
+  <script th:src="@{jQuery.js}"></script>
+  <script th:src="@{mainPageScript.js}"></script>
+  <script th:src="@{placePage/placeScript.js}"></script>
+  <link rel="stylesheet" href="mainPage.css">
+
+  <div th:replace="fragments/header :: header-css"></div>
+  <div th:replace="fragments/footer :: footer-css"></div>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<hr>
+<div class="container col-10">
+  <form class="d-flex">
+    <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Search">
+    <button class="btn btn-outline-primary" type="submit">Поиск</button>
+  </form>
+</div>
+<hr>
+
+
+<section class="section_shelf_main">
+
+  <hr>
+  <div class="container">
+    <div th:each = "place :${places}">
+      <div class="d-grid gap-3 d-md-flex">
+        <h3 th:text = "${place.getName()}"></h3>
+        <div class="d-grid gap-2 d-md-flex shelf_open_close_button">
+          <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" th:data-bs-target="'#change_shelf' + ${place.getId()}">Изменить полку</button>
+
+          <div class="modal fade" th:id="'change_shelf' + ${place.getId()}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="static_create_request_add" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="change_shelfh5">Изменить полку</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form class="row g-3">
+                    <div class="mb-3 g-3">
+                      <label th:for="'formGroupchange_shelf' + ${place.getId()}" class="form-label">Введите новое название полки</label>
+                      <input type="text" class="form-control" th:id="'formGroupchange_shelf' + ${place.getId()}" th:value="${place.getName()}">
+                    </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+                  <button type="button" class="btn btn-warning" id="changePlaceSubmit" th:data-id = "${place.getId()}">Изменить</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" th:data-bs-target="'#Modal_del_shelf' + ${place.getId()}">Удалить полку</button>
+
+          <div class="modal fade" th:id="'Modal_del_shelf' + ${place.getId()}" tabindex="-1" aria-labelledby="Modal_del_shelf" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Подтверждение</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <p>Вы действительно хотите удалить полку?</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+                  <button type="button" class="btn btn-danger" id="deletePlaceSubmit" th:data-id = "${place.getId()}">Удалить</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" th:data-bs-target="'#collapseShelf' + ${place.getId()}" aria-expanded="false" aria-controls="collapseExample">
+            Открыть/Скрыть
+          </button>
+        </div>
+      </div>
+
+      <div class="album py-5 bg-body-tertiary collapse" th:id="'collapseShelf' + ${place.getId()}">
+        <div class="container">
+          <div class="row row-cols-2 row-cols-sm-3 row-cols-md-5 g-3">
+
+            <a th:href="'/myBook?id=' + ${library.getId()}" class="text_book_name" th:each = "library : ${place.getLibrary()}">
+              <div class="col">
+                <div class="card shadow-sm">
+                  <img class="bd-placeholder-img card-img-top" th:src="'./images/usersImages/' + ${library.getBookId().getImage()}" height="225" width="100%">
+                  <div class="card-body">
+                    <p class="card-text" th:text = "${library.getBookId().getName()}"></p>
+                    <p class="card-text" th:text = "'Жанр: ' + ${library.getBookId().getGenres()[0]}"></p>
+                  </div>
+                </div>
+              </div>
+            </a>
+
+          </div>
+        </div>
+      </div>
+      <hr>
+    </div>
+  </div>
+
+  <div class="container d-grid gap-2 d-md-flex">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add_new_shelf">Создать новую полку</button>
+  </div>
+
+  <div class="modal fade" id="add_new_shelf" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="static_create_request_add" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="static_add_isbnh5">Создать новую полку</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form class="row g-3">
+            <div class="mb-3 g-3">
+              <label for="formGroupExampleInputshelf" class="form-label">Введите название полки</label>
+              <input type="text" class="form-control" id="formGroupExampleInputshelf">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+          <button type="button" class="btn btn-primary" id="createPlaceSubmit">Создать</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Пользователи</title>
+
+  <script th:src="@{jQuery.js}"></script>
+  <script th:src="@{mainPageScript.js}"></script>
+  <script th:src="@{usersPage/usersScript.js}"></script>
+  <link rel="stylesheet" href="usersPage/usersPage.css">
+
+  <div th:replace="fragments/header :: header-css"></div>
+  <div th:replace="fragments/footer :: footer-css"></div>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div id="result" style="height: 650px; width: 1400px">
+  <br>
+  <div id="usersNavButtons" style="text-align: center">
+    <div class="btn-group" role="group" aria-label="Навигационное меню">
+      <input type="radio" class="btn-check" name="btnradio" id="allRadioButton" autocomplete="off" checked>
+      <label class="btn btn-outline-primary" for="allRadioButton">все</label>
+
+      <input type="radio" class="btn-check" name="btnradio" id="usersRadioButton" autocomplete="off">
+      <label class="btn btn-outline-primary" for="usersRadioButton">Пользователи</label>
+
+      <input type="radio" class="btn-check" name="btnradio" id="adminRadioButton" autocomplete="off">
+      <label class="btn btn-outline-primary" for="adminRadioButton">Администраторы</label>
+    </div>
+  </div>
+  <div class="tbl-header">
+    <table cellpadding="0" cellspacing="0" border="0">
+      <thead>
+      <tr>
+        <th>Имя</th>
+        <th>Пароль</th>
+        <th>Не заблокирован</th>
+        <th></th>
+        <th></th>
+      </tr>
+      </thead>
+    </table>
+  </div>
+  <div class="tbl-content">
+    <table cellpadding="0" cellspacing="0" border="0">
+      <tbody id="tableBody">
+        <tr th:each = "user : ${users}">
+          <td th:text = "${user.getUsername()}" id="viewUserName"></td>
+          <td th:text = "${user.getPassword()}" id="viewPassword"></td>
+          <td th:text = "${user.getEnabled()}" id="viewEnabled" th:data-status = "${user.getAuthority()}"></td>
+          <td>
+            <button class="btn btn-light" type="button" th:data-username = "${user.getUsername()}" id="changeUserButton">изменить</button>
+          </td>
+          <td>
+            <button class="btn btn-light" type="button" th:data-username = "${user.getUsername()}" id="deleteUserButton">удалить</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <br>
+  <div id="createUserBlock" style="text-align: center">
+    <p>Создать пользователя</p>
+    <button type="button" class="btn btn-primary" id="createUser">Создать</button>
+  </div>
+</div>
+
+<div id = "localModal">
+
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous"></script>
+</body>
+</html>

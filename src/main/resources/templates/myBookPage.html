@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>книга</title>
+
+    <script th:src="@{jQuery.js}"></script>
+    <script th:src="@{mainPageScript.js}"></script>
+    <script th:src="@{MyBookPage/MybookScript.js}"></script>
+
+    <link rel="stylesheet" href="mainPage.css">
+
+    <div th:replace="fragments/header :: header-css"></div>
+    <div th:replace="fragments/footer :: footer-css"></div>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<hr class="featurette-divider">
+<div class="container">
+    <div class="row featurette">
+        <div class="col-7 order-md-2">
+            <h2 class="featurette-heading fw-normal lh-1" th:text = "${library.getBookId().getName()}"></h2>
+            <p class="lead" th:text = "'Описание: ' + ${library.getBookId().getDescription()}"></p>
+
+            <p class="lead" th:if = "${library.getAdditionalInformationId() != null}" th:text = "'Заметки: ' + ${library.getAdditionalInformationId().getNotes()[0]}"></p>
+            <p class="lead" th:if = "${library.getAdditionalInformationId() != null}" th:text = "'Место на полке: ' + ${library.getAdditionalInformationId().getPlaceInfo()}"></p>
+            <p class="lead" th:if = "${library.getAdditionalInformationId() != null}" th:text = "'Последняя страница: ' + ${library.getAdditionalInformationId().getLastPage()}"></p>
+
+        </div>
+
+        <div class="col-5 order-md-1">
+            <img th:src="'./images/usersImages/' + ${library.getBookId().getImage()}" width="70%" height="50%">
+            <div class="d-grid gap-2 button_mybook">
+                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#static_change_book">Изменить информацию о книге</button>
+
+                <div class="modal fade" id="static_change_book" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">Изменить информацию о книге</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form class="row g-3">
+                                    <div class="mb-3 g-3">
+                                        <div class="mb-3 g-3">
+                                            <label for="select_my_shelf_myb" class="form-label">Выбрать полку</label>
+                                            <select class="form-select" id="select_my_shelf_myb" aria-label="Default select example">
+                                                <option th:value = "${library.getPlaceid() != null} ? ${library.getPlaceid().getId()} : 'none'" th:text = "${library.getPlaceid() != null} ? ${library.getPlaceid().getName()} : 'нет'" selected></option>
+                                                <option th:each = "place : ${user.getPlaces()}" th:if = "${library.getClassId() != null && place.getId() != library.getPlaceid().getId()}" th:value="${place.getId()}" th:text = "${place.getName()}"></option>
+                                                <option th:if = "${library.getPlaceid() != null}" value="none">Нет</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3 g-3">
+                                            <label for="select_my_class_myb" class="form-label">Выбрать класс</label>
+                                            <select class="form-select" id="select_my_class_myb" aria-label="Default select example">
+                                                <option th:value = "${library.getClassId() != null} ? ${library.getClassId().getId()} : 'none'" th:text = "${library.getClassId() != null} ? ${library.getClassId().getName()} : 'нет'" selected></option>
+                                                <option th:each = "group : ${user.getClasses()}" th:if = "${library.getClassId() != null && group.getId() != library.getClassId().getId()}" th:value="${group.getId()}" th:text = "${group.getName()}"></option>
+                                                <option th:if = "${library.getClassId() != null}" value="none">Нет</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3 g-3">
+                                            <label for="select_my_status_myb" class="form-label">Выбрать статус</label>
+                                            <select class="form-select" id="select_my_status_myb" aria-label="Default select example">
+                                                <option value="1">Не прочитано</option>
+                                                <option value="2">Читаю</option>
+                                                <option value="3">Прочитано</option>
+                                                <option value="4">хочу приобрести</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3 g-3">
+                                            <label for="select_hidden_myb" class="form-label">Выбрать видимость книги</label>
+                                            <select class="form-select" id="select_hidden_myb" aria-label="Default select example">
+                                                <option value="true" selected>Да</option>
+                                                <option value="false">Нет</option>
+                                            </select>
+                                        </div>
+                                        <label for="formGrouptextarea_myb" class="form-label">Заметки (необязательно): </label>
+                                        <textarea class="form-control" id="formGrouptextarea_myb" th:text = "${library.getAdditionalInformationId() != null} ? ${library.getAdditionalInformationId().getNotes()[0]} : ''"></textarea>
+                                        <div class="row">
+                                            <div class="col">
+                                                <label class="form-label">Место на полке (необязательно): </label>
+                                                <input type="text" class="form-control" id="placeInfo" th:text = "${library.getAdditionalInformationId() != null} ? ${library.getAdditionalInformationId().getPlaceInfo()} : ''">
+                                            </div>
+                                            <div class="col">
+                                                <label class="form-label">Последняя страница (необязательно): </label>
+                                                <input type="text" class="form-control" id="lastPage" th:text = "${library.getAdditionalInformationId() != null} ? ${library.getAdditionalInformationId().getLastPage()} : ''">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+                                <button type="button" class="btn btn-outline-warning" id="refreshLyb" th:data-id = "${library.getId()}">Изменить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#Modal_del_book">Удалить книгу из библиотеки</button>
+
+                <div class="modal fade" id="Modal_del_book" tabindex="-1" aria-labelledby="Modal_del_book" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Подтверждение</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Вы действительно хотите удалить книгу?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+                                <button type="button" class="btn btn-danger" id="submitDeleteLibrary" th:data-id = "${library.getId()}">Удалить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <p class="lead" th:text = "'Жанр: ' + ${library.getBookId().getGenres()[0]} + ' | Год релиза: ' + ${library.getBookId().getYear_published()} + ' г'"></p>
+            <p class="lead" th:text = "'Автор: ' + ${library.getBookId().getAuthor()[0]}"></p>
+            <p class="lead" th:text = "'Издатель: ' + ${library.getBookId().getPublished()}"></p>
+            <p class="lead" th:text = "'Количество страниц: ' + ${library.getBookId().getCapacity()}"></p>
+            <p class="lead" th:text = "'ISBN: ' + ${library.getBookId().getISBN()}"></p>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous"></script>
+</body>
+</html>

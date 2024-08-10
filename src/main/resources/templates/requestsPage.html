@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Запросы</title>
+    <script th:src="@{jQuery.js}"></script>
+    <script th:src="@{mainPageScript.js}"></script>
+    <script th:src="@{requestsPage/requestsPageScript.js}"></script>
+
+    <link rel="stylesheet" href="mainPage.css">
+
+    <div th:replace="fragments/header :: header-css"></div>
+    <div th:replace="fragments/footer :: footer-css"></div>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<section class="section_controlpanel_main">
+    <div class="container">
+        <div class="col-sm-6 px-4 py-5">
+            <h2 class="primary">Все заявки</h2>
+            <table class="table table-light">
+                <thead>
+                <tr>
+                    <th scope="col">Статус</th>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Название</th>
+                    <th scope="col">Cтраницы</th>
+                    <th scope="col">Описание</th>
+                    <th scope="col">Жанр</th>
+                    <th scope="col">Год</th>
+                    <th scope="col">Издатель</th>
+                    <th scope="col">Автор</th>
+                    <th scope="col">ISBN</th>
+                    <th scope="col">Создать</th>
+                    <th scope="col">Удалить</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each = "request : ${requests}">
+                    <td th:text = "${request.getStatus()}"></td>
+                    <td th:text = "${request.getDate().toString().split(' ')[0]}"></td>
+                    <td th:text = "${request.getName()}"></td>
+                    <td th:text = "${request.getCapacity()}"></td>
+                    <td th:text = "${request.getDescription()}"></td>
+                    <td th:text = "${request.getGenres()[0]}"></td>
+                    <td th:text = "${request.getYear_published()}"></td>
+                    <td th:text = "${request.getPublished()}"></td>
+                    <td th:text = "${request.getAuthor()[0]}"></td>
+                    <td th:text = "${request.getISBN()}"></td>
+
+                    <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" th:data-bs-target="'#add_new_book_fr_maneg' + ${request.getId()}">Добавить книгу</button></td>
+
+                    <div class="modal fade" th:id="'add_new_book_fr_maneg' + ${request.getId()}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="add_new_book_fr_maneg" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel">Добавить книгу</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form class="row g-3">
+                                        <div class="mb-3 g-3">
+                                            <label th:for="'formGroupExampleInput' + ${request.getId()}" class="form-label">Название книги</label>
+                                            <input type="text" class="form-control" th:id="'formGroupExampleInput' + ${request.getId()}" placeholder="Название" th:value = "${request.getName()}">
+                                            <label th:for="'isbnAddBook' + ${request.getId()}" class="form-label">ISBN</label>
+                                            <input type="text" class="form-control" th:id="'isbnAddBook' + ${request.getId()}" placeholder="Название" th:value = "${request.getISBN()}">
+                                            <label th:for="'formGrouptextarea' + ${request.getId()}" class="form-label">Описание</label>
+                                            <textarea class="form-control" th:id="'formGrouptextarea' + ${request.getId()}" th:text = "${request.getDescription()}"></textarea>
+                                            <label th:for="'imageAddBook' + ${request.getId()}" class="form-label">Обложка</label>
+                                            <img th:src = "'images/users/' + ${request.getImage()}" th:id="'imageAddBook' + ${request.getId()}" style="width: 100px; height: 100px; margin-bottom: 5px; margin-top: 5px">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label class="form-label">Жанр: </label>
+                                                    <input type="text" class="form-control" th:id="'genresAddBook' + ${request.getId()}" th:value = "${request.getGenres()[0]}">
+                                                </div>
+                                                <div class="col">
+                                                    <label class="form-label">Год: </label>
+                                                    <input type="text" class="form-control" th:id="'yearAddBook' + ${request.getId()}" th:value = "${request.getYear_published()}">
+                                                </div>
+                                                <div class="col">
+                                                    <label class="form-label">Количество страниц: </label>
+                                                    <input type="text" class="form-control" th:id="'capacityAddBook' + ${request.getId()}" th:value = "${request.getCapacity()}">
+                                                </div>
+                                            </div>
+                                            <label class="form-label">Автор: </label>
+                                            <input type="text" class="form-control" th:id="'authorAddBook' + ${request.getId()}" th:value = "${request.getAuthor()[0]}">
+                                            <label class="form-label">Издатель: </label>
+                                            <input type="text" class="form-control" th:id="'publishedAddBook' + ${request.getId()}" th:value = "${request.getPublished()}">
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <button type="button" class="btn btn-primary" id="AddBookSubmit" th:data-id = "${request.getId()}">Добавить</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <td><button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" th:data-bs-target="'#Modal_del_req_maneg' + ${request.getId()}">Удалить заявку</button></td>
+
+                    <div class="modal fade" th:id="'Modal_del_req_maneg' + ${request.getId()}" tabindex="-1" aria-labelledby="Modal_del_shelf" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Подтверждение</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Вы действительно хотите удалить заявку?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <button type="button" class="btn btn-danger" id="deleteBookSubmit" th:data-id = "${request.getId()}">Удалить</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<div th:replace="fragments/footer :: footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous"></script>
+</body>
+</html>

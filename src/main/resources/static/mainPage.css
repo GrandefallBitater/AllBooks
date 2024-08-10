@@ -1,0 +1,75 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+
+.section_index_main {
+    background-color: #f2f3f4;
+    height: 90%;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+
+
+/* Index.html */
+.carousel-caption {
+    bottom: 1%;
+    left: 10%;
+    right: 10%;
+}
+.slider_descript {
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+
+
+
+
+
+
+
+/* books.html */
+.text_book_name {
+    text-decoration: none;
+}
+
+
+/* book.html */
+.carusel_book_com {
+    height: 25vh;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.btn_book_com {
+    text-align: right;
+    margin-bottom: 30%;
+}
+.button_book_save {
+    margin-top: 1%;
+    width: 70%;
+}
+
+/* shelf.html */
+
+.section_shelf_main {
+    background-color: #f2f3f4;
+    padding-bottom: 40vh;
+}
+
+.shelf_open_close_button {
+    position: absolute;
+    margin-left: 60%;
+}
+
+/* mybook.html */
+
+.button_mybook {
+    margin-top: 2%;
+    width: 70%;
+}
